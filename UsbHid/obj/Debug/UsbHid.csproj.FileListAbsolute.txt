@@ -1,0 +1,21 @@
+C:\Users\nathana\Downloads\UsbHid\bin\Debug\UsbHid.dll
+C:\Users\nathana\Downloads\UsbHid\bin\Debug\UsbHid.pdb
+C:\Users\nathana\Downloads\UsbHid\obj\Debug\UsbHid.csprojResolveAssemblyReference.cache
+C:\Users\nathana\Downloads\UsbHid\obj\Debug\UsbHid.USB.Classes.DeviceChangeNotifier.resources
+C:\Users\nathana\Downloads\UsbHid\obj\Debug\UsbHid.csproj.GenerateResource.Cache
+C:\Users\nathana\Downloads\UsbHid\obj\Debug\UsbHid.dll
+C:\Users\nathana\Downloads\UsbHid\obj\Debug\UsbHid.pdb
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\bin\Debug\UsbHid.dll
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\bin\Debug\UsbHid.pdb
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.csprojResolveAssemblyReference.cache
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.USB.Classes.DeviceChangeNotifier.resources
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.csproj.GenerateResource.Cache
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.dll
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.pdb
+C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\bin\Debug\UsbHid.dll
+C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\bin\Debug\UsbHid.pdb
+C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.csprojResolveAssemblyReference.cache
+C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.USB.Classes.DeviceChangeNotifier.resources
+C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.csproj.GenerateResource.Cache
+C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.dll
+C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\UsbHid\obj\Debug\UsbHid.pdb
