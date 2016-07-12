@@ -87,14 +87,14 @@ namespace WpfApplication2.CustomControls
 
         private void UpdateGauge()
         {
-            GaugeHeight = border.ActualHeight/100*GaugePercent;
+            GaugeHeight = Border.ActualHeight/100*GaugePercent;
             if (ActiveGauge)
             {
-                label.Background = GaugeFill;
+                Label.Background = GaugeFill;
             }
             else
             {
-                label.Background = new SolidColorBrush(Colors.Transparent);
+                Label.Background = new SolidColorBrush(Colors.Transparent);
             }
         }
     }

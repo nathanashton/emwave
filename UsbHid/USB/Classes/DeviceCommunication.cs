@@ -35,7 +35,7 @@ namespace UsbHid.USB.Classes
                                     : "usbGenericHidCommunication:writeReportToDevice(): -> Write report failed!");
                 return success;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // An error - send out some debug and return failure
                 Debug.WriteLine(

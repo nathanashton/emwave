@@ -4,89 +4,95 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:chart="http://schemas.syncfusion.com/wpf"
-        xmlns:wpfApplication2="clr-namespace:WpfApplication2"
         xmlns:customControls="clr-namespace:WpfApplication2.CustomControls"
         mc:Ignorable="d" Name="Main"
         Title="MainWindow" Height="350" Width="928">
     <Window.Resources>
-        <wpfApplication2:PercentageConverter x:Key="perc" />
-        <wpfApplication2:PercentageConverter2 x:Key="perc2" />
     </Window.Resources>
     <DockPanel Background="Black">
 
-
-        <Grid Margin="10" Name="gr" DockPanel.Dock="Right" Width="200" Background="Black">
+        <Grid Margin="10" Name="Gr" DockPanel.Dock="Right" Width="200" Background="Black">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"></ColumnDefinition>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!--<Border Name="brd" Grid.Column="0" BorderThickness="1" VerticalAlignment="Stretch" BorderBrush="White" Width="25">
-                <Rectangle Fill="Red" Margin="2" Height="{Binding
-                       Converter={StaticResource perc},
-                       ElementName=brd,
-                       Path=ActualHeight,
-                       ConverterParameter=0.5}" VerticalAlignment="Bottom" />
-            </Border>-->
-            <customControls:LinearGauge Grid.Column="0" GaugeFill="Red" GaugePercent="{Binding RedPercent}" ActiveGauge="{Binding RedActive}"/>
-            <customControls:LinearGauge Grid.Column="1" Margin="5,0,5,0" GaugeFill="Blue" GaugePercent="{Binding BluePercent}"  ActiveGauge="{Binding BlueActive}"/>
-            <customControls:LinearGauge Grid.Column="2" GaugeFill="Green" GaugePercent="{Binding GreenPercent}"  ActiveGauge="{Binding GreenActive}"/>
-
-
+            <StackPanel Orientation="Vertical" Grid.Column="0">
+                <Label FontSize="20" HorizontalAlignment="Center" Foreground="White" Content="{Binding CurrentHr.H}" />
+                <Label FontSize="20" HorizontalAlignment="Center" Foreground="White" Content="{Binding CurrentHr.ElapsedTime}" />
+            </StackPanel>
+            <customControls:LinearGauge Grid.Column="1" GaugeFill="Red" GaugePercent="{Binding CurrentHr.RedPercent}" ActiveGauge="{Binding CurrentHr.RedActive}" />
+            <customControls:LinearGauge Grid.Column="2" Margin="5,0,5,0" GaugeFill="Blue" GaugePercent="{Binding CurrentHr.BluePercent}"  ActiveGauge="{Binding CurrentHr.BlueActive}" />
+            <customControls:LinearGauge Grid.Column="3" GaugeFill="Green" GaugePercent="{Binding CurrentHr.GreenPercent}"  ActiveGauge="{Binding CurrentHr.GreenActive}" />
         </Grid>
-
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Height="50">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
             <Button Content="Debug" Click="Button_Click_3" />
 
             <Button Content="Connect" Click="Button_Click" />
-            <Label Width="200" Content="{Binding Connected}" />
             <Button Content="Disconnect" Click="Button_Click_1" />
             <Button Content="Save" Click="Button_Click_2" />
-            <Label Foreground="White" Content="{Binding CurrentHR}" />
-
+            <Label Content="{Binding Test}" Foreground="White" />
         </StackPanel>
 
-        <chart:SfChart Background="Black" Margin="10">
-            <chart:SfChart.Annotations>
-                <chart:HorizontalLineAnnotation Y1="{Binding HRAverage}" CoordinateUnit="Axis" CanDrag="False"
-                                                Foreground="Blue" ShowAxisLabel="True" />
-            </chart:SfChart.Annotations>
-            <chart:SfChart.PrimaryAxis>
-                <chart:TimeSpanAxis Foreground="White" Header="Time" FontSize="12" Minimum="00:00:00"
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" DockPanel.Dock="Bottom">
+                <CheckBox Foreground="White" IsChecked="{Binding HrAverageVisible, Mode=TwoWay}" Content="HR Average"></CheckBox>
+                <CheckBox Foreground="White" IsChecked="{Binding HrMaxVisible, Mode=TwoWay}" Content="HR Max"></CheckBox>
+                <CheckBox Foreground="White" IsChecked="{Binding HrMinVisible, Mode=TwoWay}" Content="HR Min"></CheckBox>
+            </StackPanel>
+
+            <chart:SfChart Background="Black" Margin="10"  MouseMove="HeartRateChart_MouseMove">
+                <chart:SfChart.Behaviors>
+
+                    <chart:ChartTrackBallBehavior x:Name="tt">
+                        <chart:ChartTrackBallBehavior.LineStyle>
+
+                            <Style TargetType="Line">
+
+                                <Setter Property="Stroke" Value="Yellow" />
+
+                                <Setter Property="StrokeThickness" Value="1" />
+                            </Style>
+                        </chart:ChartTrackBallBehavior.LineStyle>
+                    </chart:ChartTrackBallBehavior>
+                </chart:SfChart.Behaviors>
+                <chart:SfChart.Annotations>
+                    <chart:HorizontalLineAnnotation Y1="{Binding HrAverage}" ShowLine="{Binding HrAverageVisible}"    CoordinateUnit="Axis" CanDrag="False"
+                                                Foreground="Blue"  ShowAxisLabel="{Binding HrAverageVisible}" />
+                    <chart:HorizontalLineAnnotation Y1="{Binding HrMin}" Stroke="Yellow" ShowAxisLabel="{Binding HrMinVisible}" ShowLine="{Binding HrMinVisible}"  StrokeDashArray="4,4" CoordinateUnit="Axis" CanDrag="False" />
+                    <chart:HorizontalLineAnnotation Y1="{Binding HrMax}" ShowLine="{Binding HrMaxVisible}"  ShowAxisLabel="{Binding HrMaxVisible}"  CoordinateUnit="Axis" CanDrag="False"
+                                                Stroke="Yellow" StrokeDashArray="4,4" />
+                </chart:SfChart.Annotations>
+                <chart:SfChart.PrimaryAxis>
+                    <chart:TimeSpanAxis ShowTrackBallInfo="False" Foreground="White" Header="Time" FontSize="12" Minimum="00:00:00"
                                     Maximum="00:03:00">
-                    <chart:TimeSpanAxis.MajorGridLineStyle>
-                        <Style TargetType="Line">
-                            <Setter Property="StrokeThickness" Value="1" />
-                            <Setter Property="Stroke" Value="Gray" />
-                            <Setter Property="StrokeDashArray" Value="2,2" />
-                        </Style>
-                    </chart:TimeSpanAxis.MajorGridLineStyle>
-                </chart:TimeSpanAxis>
-            </chart:SfChart.PrimaryAxis>
+                        <chart:TimeSpanAxis.MajorGridLineStyle>
+                            <Style TargetType="Line">
+                                <Setter Property="StrokeThickness" Value="1" />
+                                <Setter Property="Stroke" Value="#272727" />
+                            </Style>
+                        </chart:TimeSpanAxis.MajorGridLineStyle>
+                    </chart:TimeSpanAxis>
+                </chart:SfChart.PrimaryAxis>
 
-            <chart:SfChart.SecondaryAxis>
-                <chart:NumericalAxis Header="HR" Foreground="White" RangePadding="Additional" FontSize="12">
-                    <chart:NumericalAxis.MajorGridLineStyle>
-                        <Style TargetType="Line">
-                            <Setter Property="StrokeThickness" Value="1" />
-                            <Setter Property="Stroke" Value="Gray" />
-                            <Setter Property="StrokeDashArray" Value="2,2" />
-                        </Style>
-                    </chart:NumericalAxis.MajorGridLineStyle>
-                </chart:NumericalAxis>
-            </chart:SfChart.SecondaryAxis>
+                <chart:SfChart.SecondaryAxis>
+                    <chart:NumericalAxis Header="HR" Foreground="White" RangePadding="Additional" FontSize="12">
+                        <chart:NumericalAxis.MajorGridLineStyle>
+                            <Style TargetType="Line">
+                                <Setter Property="StrokeThickness" Value="1" />
+                                <Setter Property="Stroke" Value="#272727" />
+                            </Style>
+                        </chart:NumericalAxis.MajorGridLineStyle>
+                    </chart:NumericalAxis>
+                </chart:SfChart.SecondaryAxis>
 
-            <chart:SplineSeries EnableAnimation="True" Interior="#10E810" StrokeThickness="1.5"
+                <chart:SplineSeries x:Name="h" EnableAnimation="True" Interior="#10E810" StrokeThickness="1.5"
                                 ItemsSource="{Binding Data}" XBindingPath="ElapsedTime" YBindingPath="H">
-
-                <!--<chart:SplineSeries.Trendlines>
-                    -->
-                <!--TrendLines drawn will show the average of the graph-->
-                <!--
-                    <chart:Trendline Stroke="Aqua" Type="Power" StrokeThickness="1" Label="Average"></chart:Trendline>
-                </chart:SplineSeries.Trendlines>-->
-            </chart:SplineSeries>
-        </chart:SfChart>
+     
+                </chart:SplineSeries>
+            </chart:SfChart>
+        </DockPanel>
     </DockPanel>
 </Window>

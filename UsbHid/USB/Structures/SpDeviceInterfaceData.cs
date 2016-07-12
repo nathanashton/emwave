@@ -9,6 +9,6 @@ namespace UsbHid.USB.Structures
         public int cbSize;
         public Guid InterfaceClassGuid;
         public int Flags;
-        public int Reserved;
+        public IntPtr Reserved;
     }
 }

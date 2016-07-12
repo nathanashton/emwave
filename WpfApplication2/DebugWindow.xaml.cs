@@ -12,11 +12,11 @@ namespace WpfApplication2
         public DebugWindow()
         {
             InitializeComponent();
-            var _viewModel = new ViewModel(this);
-            DataContext = _viewModel;
+            var viewModel = new ViewModel(this);
+            DataContext = viewModel;
             if (File.Exists("test.data"))
             {
-                _viewModel.Data2 = ViewModel.ReadFromBinaryFile<ObservableCollection<HR>>("test.data");
+                viewModel.Data2 = ViewModel.ReadFromBinaryFile<ObservableCollection<Hr>>("test.data");
             }
         }
     }

@@ -5,7 +5,7 @@ namespace WpfApplication2
 {
     [Serializable]
     [ImplementPropertyChanged]
-    public class HR
+    public class Hr
     {
         public TimeSpan ElapsedTime { get; set; }
         public int H { get; set; } // Heartrate
@@ -17,6 +17,13 @@ namespace WpfApplication2
         public int A { get; set; }
         public int E { get; set; }
         public int L { get; set; }
-        public bool Changed { get; set; }
+
+        public int RedPercent { get; set; }
+        public int BluePercent { get; set; }
+        public int GreenPercent { get; set; }
+
+        public bool RedActive { get; set; }
+        public bool BlueActive { get; set; }
+        public bool GreenActive { get; set; }
     }
 }

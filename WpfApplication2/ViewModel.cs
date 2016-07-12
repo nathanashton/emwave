@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PropertyChanged;
+using Syncfusion.UI.Xaml.Charts;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -7,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
-using PropertyChanged;
+using System.Windows.Threading;
 using UsbHid;
 
 namespace WpfApplication2
@@ -15,47 +17,75 @@ namespace WpfApplication2
     [ImplementPropertyChanged]
     public class ViewModel
     {
-        public Window _window;
-        public Stopwatch stopwatch = new Stopwatch();
-
-        public UsbHidDevice usb;
+        public Window Window;
+        public Stopwatch Stopwatch = new Stopwatch();
+        public DispatcherTimer Timer;
+        public UsbHidDevice Usb;
 
         public ViewModel(Window window)
         {
-            _window = window;
-            Data = new ObservableCollection<HR>();
-            Data2 = new ObservableCollection<HR>();
+            HrAnnotations = new AnnotationCollection();
+            var verticalLineAnnotation = new VerticalLineAnnotation
+            {
+                ShowAxisLabel = true,
+                CoordinateUnit = CoordinateUnit.Axis,
+                X1 = 1
+            };
 
-            usb = new UsbHidDevice(0x0E30, 0x0008);
-            usb.DataReceived += Usb_DataReceived;
-            usb.OnConnected += Usb_OnConnected;
-            usb.OnDisConnected += Usb_OnDisConnected;
+            HrAnnotations.Add(verticalLineAnnotation);
 
-            //if (File.Exists("test.data"))
-            //{
-            //    Data = ViewModel.ReadFromBinaryFile<ObservableCollection<HR>>("test.data");
-            //    CalculateAverage();
-            //}
+            Window = window;
+            Data = new ObservableCollection<Hr>();
+            Data2 = new ObservableCollection<Hr>();
+
+            Usb = new UsbHidDevice(0x0E30, 0x0008);
+            Usb.DataReceived += Usb_DataReceived;
+            Usb.OnConnected += Usb_OnConnected;
+            Usb.OnDisConnected += Usb_OnDisConnected;
+
+            Timer = new DispatcherTimer();
+            Timer.Tick += Timer_Tick;
+            Timer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+
+            if (File.Exists("test.data"))
+            {
+                Data = ReadFromBinaryFile<ObservableCollection<Hr>>("test.data");
+                CalculateAverages();
+                CurrentHr = Data.Last();
+            }
         }
 
-        // public ChartValues<HR> HeartRates { get; set; }
+        public string Test { get; set; }
+        public string ElapsedTime { get; set; }
 
         public bool Connected { get; set; }
-        public int HRAverage { get; set; }
-        public int CurrentHR { get; set; }
+        public int HrAverage { get; set; }
+        public int HrMin { get; set; }
+        public int HrMax { get; set; }
 
-        public int RedPercent { get; set; }
-        public int BluePercent { get; set; }
-        public int GreenPercent { get; set; }
+        public bool HrAverageVisible { get; set; } = false;
+        public bool HrMinVisible { get; set; } = false;
+        public bool HrMaxVisible { get; set; } = false;
 
+        public Hr CurrentHr { get; set; }
 
-        public bool RedActive { get; set; }
-        public bool BlueActive { get; set; }
-        public bool GreenActive { get; set; }
+        public AnnotationCollection HrAnnotations { get; set; }
 
+        //public int RedPercent { get; set; }
+        //public int BluePercent { get; set; }
+        //public int GreenPercent { get; set; }
 
-        public ObservableCollection<HR> Data { get; set; }
-        public ObservableCollection<HR> Data2 { get; set; }
+        //public bool RedActive { get; set; }
+        //public bool BlueActive { get; set; }
+        //public bool GreenActive { get; set; }
+
+        public ObservableCollection<Hr> Data { get; set; }
+        public ObservableCollection<Hr> Data2 { get; set; }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            ElapsedTime = Stopwatch.Elapsed.ToString("mm\\:ss\\.ff");
+        }
 
         public void Usb_OnDisConnected()
         {
@@ -67,14 +97,19 @@ namespace WpfApplication2
             Connected = true;
         }
 
-        public void CalculateAverage()
+        public void CalculateAverages()
         {
             var c = Data.Count;
             if (c == 0)
             {
                 c = 1;
             }
-            HRAverage = Data.Sum(x => x.H)/c;
+            HrAverage = Data.Sum(x => x.H) / c;
+            if (Data == null || Data.Count <= 0) return;
+            {
+                HrMin = Data.Min(x => x.H);
+                HrMax = Data.Max(x => x.H);
+            }
         }
 
         public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
@@ -91,13 +126,12 @@ namespace WpfApplication2
             using (Stream stream = File.Open(filePath, FileMode.Open))
             {
                 var binaryFormatter = new BinaryFormatter();
-                return (T) binaryFormatter.Deserialize(stream);
+                return (T)binaryFormatter.Deserialize(stream);
             }
         }
 
         public void Usb_DataReceived(byte[] data)
         {
-
             var hex = ByteArrayToString(data);
             var text = ConvertHexToString(hex);
 
@@ -111,7 +145,7 @@ namespace WpfApplication2
             var e = Regex.Match(text, @"E=[0-9]+");
             var l = Regex.Match(text, @"L=[0-9]+");
 
-            var heartrate = new HR {ElapsedTime = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds)};
+            var heartrate = new Hr { ElapsedTime = TimeSpan.FromMilliseconds(Stopwatch.ElapsedMilliseconds) };
 
             if (h.Success)
             {
@@ -153,10 +187,6 @@ namespace WpfApplication2
                 if (value.Success)
                 {
                     heartrate.S = Convert.ToInt32(value.Value);
-                    if (heartrate.T != 0)
-                    {
-                        CalculateCoherence(heartrate.S);
-                    }
                 }
             }
 
@@ -187,59 +217,73 @@ namespace WpfApplication2
                 }
             }
 
-            CalculateAverage();
+            CalculateAverages();
 
-            if (heartrate.T != 0)
-            {
-                Data2.Add(heartrate);
-            }
-
-
-            _window.Dispatcher.Invoke(() => { Data.Add(heartrate); });
-
-            CurrentHR = heartrate.H;
+            CalculateCoherence(heartrate);
+            CurrentHr = heartrate;
+            Window.Dispatcher.Invoke(() => { Data.Add(heartrate); });
         }
 
-        private void CalculateCoherence(int value)
+        private void CalculateCoherence(Hr hr)
         {
-            if (value == 0)
+            var value = hr.S;
+
+            if (hr.T != 0)
             {
-                RedActive = true;
-                BlueActive = false;
-                GreenActive = false;
+                if (value == 0)
+                {
+                    hr.RedActive = true;
+                    hr.BlueActive = false;
+                    hr.GreenActive = false;
+                }
+                if (value == 1)
+                {
+                    hr.RedActive = false;
+                    hr.BlueActive = true;
+                    hr.GreenActive = false;
+                }
+                if (value == 2)
+                {
+                    hr.RedActive = false;
+                    hr.BlueActive = false;
+                    hr.GreenActive = true;
+                }
             }
-            if (value == 1)
+            else
             {
-                RedActive = false;
-                BlueActive = true;
-                GreenActive = false;
-            }
-            if (value == 2)
-            {
-                RedActive = false;
-                BlueActive = false;
-                GreenActive = true;
+                if (Data.Count > 0)
+                {
+                    var previous = Data.Last();
+                    hr.RedActive = previous.RedActive;
+                    hr.BlueActive = previous.BlueActive;
+                    hr.GreenActive = previous.GreenActive;
+                }
+                else
+                {
+                    hr.BlueActive = true;
+                }
             }
 
-            //Calculate percentages
+            //Calculate percentages based on whre Red, Green and Blue arent all false
+            var count = Data.Count == 0 ? 1 : Data.Count();
 
-            double count = Data2.Count(x => x.T != 0);
-            double redcount = Data2.Count(x => x.S == 0);
-            double bluecount = Data2.Count(x => x.S == 1);
-            double greencount = Data2.Count(x => x.S == 2);
-            if (count == 0) return;
-            var r = redcount/count*100;
-            var b = bluecount/count*100;
-            var g = greencount/count*100;
+            double redcount = Data.Count(x => x.RedActive);
+            double bluecount = Data.Count(x => x.BlueActive);
+            double greencount = Data.Count(x => x.GreenActive);
 
-            RedPercent = (int) r;
-            BluePercent = (int) b;
-            GreenPercent = (int) g;
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            var r = redcount / count * 100;
+            var b = bluecount / count * 100;
+            var g = greencount / count * 100;
+
+            hr.RedPercent = (int)r;
+            hr.BluePercent = (int)b;
+            hr.GreenPercent = (int)g;
         }
 
         public static string ByteArrayToString(byte[] ba)
         {
-            var hex = new StringBuilder(ba.Length*2);
+            var hex = new StringBuilder(ba.Length * 2);
             foreach (var b in ba)
                 hex.AppendFormat("{0:x2}", b);
             return hex.ToString();
@@ -265,6 +309,14 @@ namespace WpfApplication2
                 hexValue = hexValue.Substring(2, hexValue.Length - 2);
             }
             return strValue;
+        }
+
+        public static byte[] StringToByteArray(string hex)
+        {
+            return Enumerable.Range(0, hex.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                             .ToArray();
         }
     }
 }

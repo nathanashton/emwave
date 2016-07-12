@@ -7,9 +7,9 @@
              d:DesignHeight="300" d:DesignWidth="300" Name="Gauge">
     <DockPanel>
         
-        <Label Name="label" HorizontalContentAlignment="Center" Width="30" Foreground="White" Content="{Binding GaugePercent, Mode=TwoWay}" DockPanel.Dock="Bottom" />
+        <Label Name="Label" HorizontalContentAlignment="Center" Width="30" Foreground="White" Content="{Binding GaugePercent, Mode=TwoWay}" DockPanel.Dock="Bottom" />
 
-        <Border Name="border" BorderBrush="White" BorderThickness="1" Background="White" Width="30">
+        <Border Name="Border" BorderBrush="White" BorderThickness="1" Background="White" Width="30">
             <Rectangle Height="{Binding GaugeHeight}" Fill="{Binding GaugeFill}" VerticalAlignment="Bottom" />
         </Border>
     </DockPanel>

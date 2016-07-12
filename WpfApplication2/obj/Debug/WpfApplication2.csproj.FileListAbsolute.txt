@@ -64,3 +64,9 @@ C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\ob
 C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\obj\Debug\CustomControls\LinearGauge.baml
 C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\obj\Debug\CustomControls\LinearGauge.g.cs
 C:\Users\nathana\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\obj\Debug\WpfApplication2.csprojResolveAssemblyReference.cache
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\bin\Debug\Syncfusion.SfGauge.WPF.xml
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\obj\Debug\CustomControls\LinearGauge.baml
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\obj\Debug\CustomControls\LinearGauge.g.cs
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\obj\Debug\DebugWindow.g.cs
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\natha\Documents\Visual Studio 2015\Projects\EMWAVE\WpfApplication2\obj\Debug\DebugWindow.baml

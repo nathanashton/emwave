@@ -14,10 +14,22 @@ namespace UsbHid.USB.Classes.Messaging
             result[1] = Command;
             if (Parameters != null)
             {
-                Array.Copy(Parameters, 0 ,result, 2, Parameters.Length);
+                Array.Copy(Parameters, 0, result, 2, Parameters.Length);
             }
             return result;
         }
+
+        //private byte[] GetMessageData()
+        //{
+        //    var result = new byte[2 + Parameters.Length];
+        //    result[0] = 0;
+        //    result[1] = Command;
+        //    if (Parameters != null)
+        //    {
+        //        Array.Copy(Parameters, 0, result, 2, Parameters.Length);
+        //    }
+        //    return result;
+        //}
 
         public byte Command { get; set; }
     

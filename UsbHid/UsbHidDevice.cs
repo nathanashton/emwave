@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using UsbHid.USB.Classes;
 using UsbHid.USB.Classes.Messaging;
 using UsbHid.USB.Structures;
@@ -141,7 +142,17 @@ namespace UsbHid
 
         public bool SendMessage(IMesage message)
         {
-            return DeviceCommunication.WriteRawReportToDevice(message.MessageData, ref _deviceInformation);
+   
+       return DeviceCommunication.WriteRawReportToDevice(message.MessageData, ref _deviceInformation);
+        }
+
+        void Write(byte[] report, int timeout)
+        {
+            var stream = new FileStream(_deviceInformation.HidHandle, FileAccess.Write);
+            var waitEvent = new ManualResetEventSlim();
+            waitEvent.Reset();
+            stream.BeginWrite(report, 0, report.Length, (ar) => { stream.EndWrite(ar); waitEvent.Set(); }, null);
+            waitEvent.Wait(timeout);
         }
 
         public bool SendCommandMessage(byte command)
