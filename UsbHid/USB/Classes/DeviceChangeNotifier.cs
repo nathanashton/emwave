@@ -71,7 +71,11 @@ namespace UsbHid.USB.Classes
                 mInstance = this;
                 try
                 {
-                    CreateHandle();
+                    if (mInstance.Handle.ToInt32() == 0)
+                    {
+                        CreateHandle();
+
+                    }
                 }
                 catch (Exception ex)
                 {

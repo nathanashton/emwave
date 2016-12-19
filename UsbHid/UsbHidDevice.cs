@@ -142,17 +142,25 @@ namespace UsbHid
 
         public bool SendMessage(IMesage message)
         {
-   
-       return DeviceCommunication.WriteRawReportToDevice(message.MessageData, ref _deviceInformation);
+            Write(message.MessageData, 10);
+
+            // return DeviceCommunication.WriteRawReportToDevice(message.MessageData, ref _deviceInformation);
+            return true;
         }
 
         void Write(byte[] report, int timeout)
         {
-            var stream = new FileStream(_deviceInformation.HidHandle, FileAccess.Write);
-            var waitEvent = new ManualResetEventSlim();
-            waitEvent.Reset();
-            stream.BeginWrite(report, 0, report.Length, (ar) => { stream.EndWrite(ar); waitEvent.Set(); }, null);
-            waitEvent.Wait(timeout);
+            var stream = new FileStream(_deviceInformation.WriteHandle, FileAccess.Write, 512,false);
+          
+                stream.Write(report, 0, report.Length);
+            
+   
+
+
+            //var waitEvent = new ManualResetEventSlim();
+            //waitEvent.Reset();
+            //stream.BeginWrite(report, 0, report.Length, (ar) => { stream.EndWrite(ar); waitEvent.Set(); }, null);
+            //waitEvent.Wait(timeout);
         }
 
         public bool SendCommandMessage(byte command)
